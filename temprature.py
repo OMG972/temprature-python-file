@@ -1,13 +1,14 @@
 from tkinter import *
+import random
 
 ABS_ZERO_FAHRENHEIT = -459.67
-ABS_ZERO_CELSUIS = 273.15
+ABS_ZERO_CELSUIS = -273.15
 
 class TempratureConverter:
     
     def calculate_to_c(self, temp):
-        temp = float(temp)
         try:
+            temp = float(temp)
             if temp >= ABS_ZERO_FAHRENHEIT:
                 result = (float(temp)-32) * 5 /9
                 return f'{result:.1f} degrees Centigrade'
@@ -17,10 +18,10 @@ class TempratureConverter:
             return("Please enter a number")
         
     def calculate_to_f(self, temp):
-        temp = float(temp)
         try:
+            temp = float(temp)
             if temp >= ABS_ZERO_CELSUIS:
-                result = (float(temp)-32) * 5 /9
+                result = (float(temp * 9 /5) + 32) 
                 return f'{result:.1f} degrees Fahrenhight'
             else:
                 return "Temprature to low"
@@ -30,7 +31,6 @@ class TempratureConverter:
 FONT_MAIN_TITLE = "Verdana 16 bold"
 FONT_HEADING = "Verdana 12 bold"
 FONT_DEFAULT = "Verdana 12"
-root=Tk()
 
 class ConvereterGUI:
 
@@ -42,7 +42,7 @@ class ConvereterGUI:
         self.root.geometry("400x150")
         self.root.resizable(0,0)
 
-        self.container = Frame(self, root)
+        self.container = Frame(self.root)
         self.container.grid(row=0, column=0, sticky="nsew")
 
         self.frames = {}
@@ -62,13 +62,13 @@ class ConvereterGUI:
         frame.grid(row=0, column=0, sticky="nsew")
 
         lbl_title = Label(frame, text= "Temprature Converter", font=FONT_MAIN_TITLE)
-        lbl_title.pack()
+        lbl_title.grid(row=0, column=0)
 
-        button1 = Button(frame, text="To Centigrade", bg= "yellow", font= FONT_HEADING, command=lambda: self.show_frame("to cFrame"))
-        button1.pack()
+        button1 = Button(frame, text="To Centigrade", bg= "yellow", font= FONT_HEADING, command=lambda: self.show_frame("to_cFrame"))
+        button1.grid(row=1, column=0)
 
-        button2 = Button(frame, text= "To Fahrenheigt", bg= "red", font= FONT_HEADING, command=lambda: self.show_frame("to fFrame"))
-        button2.pack()
+        button2 = Button(frame, text= "To Fahrenheigt", bg= "red", font= FONT_HEADING, command=lambda: self.show_frame("to_fFrame"))
+        button2.grid(row=1, column=1)
         
         return frame
     
@@ -77,37 +77,51 @@ class ConvereterGUI:
         frame.grid(row=0, column=0, sticky="nsew")
 
         lbl2_title = Label(frame, text="Enter the temprature in Fahrenheit", font=FONT_HEADING)
-        lbl2_title()
+        lbl2_title.grid(row=0, column=0)
 
-        box1=Entry(root, justify=LEFT)
-        box1.pack()
+        box1 = Entry(frame, justify=LEFT, font=FONT_DEFAULT)
+        box1.grid(row=1, column=0)
 
-        button3 = Button(frame, text="Calculate", font=FONT_DEFAULT)
-        button3.pack()
+        lbl_result = Label(frame, text="", font=FONT_DEFAULT, fg="blue")
+        lbl_result.grid(row=2, column=0)
+        
+        button3 = Button(frame, text="Calculate", font=FONT_DEFAULT, command=lambda: lbl_result.configure(text=self.converter.calculate_to_c(box1.get())))
+        button3.grid(row=3, column=0)
 
-        button4 = Button(frame, text="Back", font=FONT_DEFAULT)
-        button4.pack()
+        button4 = Button(frame, text="Back", font=FONT_DEFAULT, command=lambda: self.show_frame("MainFrame"))
+        button4.grid(row=3, column=1)
 
-        button5 = Button(frame, text="Reset", font=FONT_DEFAULT)
-        button5.pack()
+        button5 = Button(frame, text="Reset", font=FONT_DEFAULT, command=lambda: [box1.delete(0, END), lbl_result.configure(text="")])
+        button5.grid(row=3, column=2)
+
+
+
+        return frame
 
     def create_to_f_frame(self):
         frame = Frame(self.container)
         frame.grid(row=0, column=0, sticky="nsew")
 
         lbl3_title = Label(frame, text="Enter the temprature in Centigrade", font=FONT_HEADING)
-        lbl3_title()
+        lbl3_title.grid(row=0, column=0)
 
-        box2=Entry(root, justify=LEFT)
-        box2.pack()
+        box2=Entry(frame, justify=LEFT, font=FONT_DEFAULT)
+        box2.grid(row=1, column=0)
 
-        button6 = Button(frame, text="Calculate", font=FONT_DEFAULT)
-        button6.pack()
+        lbl_result2 = Label(frame, text="", font=FONT_DEFAULT, fg="blue")
+        lbl_result2.grid(row=2, column=0)
 
-        button7 = Button(frame, text="Back", font=FONT_DEFAULT)
-        button7.pack()
+        button6 = Button(frame, text="Calculate", font=FONT_DEFAULT, command=lambda: lbl_result2.configure(text=self.converter.calculate_to_f(box2.get())))
+        button6.grid(row=3, column=0)
 
-        button8 = Button(frame, text="Reset", font=FONT_DEFAULT)
-        button8.pack()
+        button7 = Button(frame, text="Back", font=FONT_DEFAULT, command=lambda: self.show_frame("MainFrame"))
+        button7.grid(row=3, column=1)
 
+        button8 = Button(frame, text="Reset", font=FONT_DEFAULT, command=lambda: [box2.delete(0, END), lbl_result2.configure(text="")])
+        button8.grid(row=3, column=2)
+
+        return frame
+
+root = Tk()
+app = ConvereterGUI(root)
 root.mainloop()
